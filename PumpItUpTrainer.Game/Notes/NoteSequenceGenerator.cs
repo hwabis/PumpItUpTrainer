@@ -29,7 +29,7 @@ namespace PumpItUpTrainer.Game.Notes
             { Note.P1C, Note.P2C },
             { Note.P1UR, Note.P2UL },
             { Note.P1DR, Note.P2DL },
-            { Note.P2DL, Note.P1DL },
+            { Note.P2DL, Note.P1DR },
             { Note.P2UL, Note.P1UR },
             { Note.P2C, Note.P1C },
             { Note.P2UR, Note.P1UL },
