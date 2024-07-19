@@ -1,6 +1,6 @@
 ﻿namespace PumpItUpTrainer.Game.Notes
 {
-    internal enum Note
+    public enum Note
     {
         P1DL,
         P1UL,

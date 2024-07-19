@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using NUnit.Framework;
 
 namespace PumpItUpTrainer.Game.Notes
 {
-    internal static class NoteSequenceGenerator
+    public static class NoteSequenceGenerator
     {
         private static Dictionary<Note, List<Note>> nextNotesCurrentFootLeft = new()
         {

@@ -1,6 +1,6 @@
 ﻿namespace PumpItUpTrainer.Game.Notes
 {
-    internal enum Foot
+    public enum Foot
     {
         Left,
         Right
