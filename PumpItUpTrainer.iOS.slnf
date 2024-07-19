@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "PumpItUpTrainer.sln",
+    "projects": [
+      "PumpItUpTrainer.Game\\PumpItUpTrainer.Game.csproj",
+      "PumpItUpTrainer.Resources\\PumpItUpTrainer.Resources.csproj",
+      "PumpItUpTrainer.iOS\\PumpItUpTrainer.iOS.csproj"
+    ]
+  }
+}
