@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using NUnit.Framework;
 
 namespace PumpItUpTrainer.Game.Notes
 {
@@ -48,12 +50,7 @@ namespace PumpItUpTrainer.Game.Notes
             }
         }
 
-        // Banned patterns:
-        // [RLR] DL C UL
-        // [RLR] UL C DL
-        // [LRL] DR C UR
-        // [LRL] UR C DR
-        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes, bool repeatsAllowed)
+        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes)
         {
             if (noteCount < 1)
             {
@@ -64,47 +61,48 @@ namespace PumpItUpTrainer.Game.Notes
 
             List<Note> leftFootStartingNotes = [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR];
             List<Note> rightFootStartingNotes = [Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR];
-            Foot currentFoot;
 
-            if (startingFoot == Foot.Left)
-            {
-                generatedNotes.Add(leftFootStartingNotes[random.Next(5)]);
-                currentFoot = Foot.Right;
-            }
-            else
-            {
-                generatedNotes.Add(rightFootStartingNotes[random.Next(5)]);
-                currentFoot = Foot.Left;
-            }
+            allowOnlyAllowedNotes(allowedNotes, leftFootStartingNotes);
+            allowOnlyAllowedNotes(allowedNotes, rightFootStartingNotes);
+
+            generatedNotes.Add(startingFoot == Foot.Left ? leftFootStartingNotes[leftFootStartingNotes.Count] : rightFootStartingNotes[rightFootStartingNotes.Count]);
+
+            Foot currentFoot = swapFoot(startingFoot);
 
             for (int i = 1; i < noteCount; i++)
             {
                 Note currentNote = generatedNotes.Last();
 
-                if (currentFoot == Foot.Left)
-                {
-                    List<Note> candidateNotes = nextNotesCurrentFootLeft[currentNote];
+                List<Note> candidateNotes = currentFoot == Foot.Left ? nextNotesCurrentFootLeft[currentNote] : nextNotesCurrentFootRight[currentNote];
 
-                    banCandidateNotes(generatedNotes, currentFoot, candidateNotes);
+                allowOnlyAllowedNotes(allowedNotes, candidateNotes);
+                banCandidateNotesCausingBannedPatterns(generatedNotes, currentFoot, candidateNotes);
 
-                    generatedNotes.Add(candidateNotes[random.Next(candidateNotes.Count)]);
-                    currentFoot = Foot.Right;
-                }
-                else
-                {
-                    List<Note> candidateNotes = nextNotesCurrentFootRight[currentNote];
+                generatedNotes.Add(candidateNotes[random.Next(candidateNotes.Count)]);
 
-                    banCandidateNotes(generatedNotes, currentFoot, candidateNotes);
-
-                    generatedNotes.Add(candidateNotes[random.Next(candidateNotes.Count)]);
-                    currentFoot = Foot.Left;
-                }
+                currentFoot = swapFoot(currentFoot);
             }
 
             return generatedNotes;
         }
 
-        private static void banCandidateNotes(List<Note> noteSequence, Foot currentFoot, List<Note> candidateNotesToBanFrom)
+        private static void allowOnlyAllowedNotes(List<Note> allowedNotes, List<Note> notesToFilter)
+        {
+            foreach (Note note in notesToFilter.ToList())
+            {
+                if (!allowedNotes.Contains(note))
+                {
+                    notesToFilter.Remove(note);
+                }
+            }
+        }
+
+        // Banned patterns:
+        // [RLR] DL C UL
+        // [RLR] UL C DL
+        // [LRL] DR C UR
+        // [LRL] UR C DR
+        private static void banCandidateNotesCausingBannedPatterns(List<Note> noteSequence, Foot currentFoot, List<Note> candidateNotesToBanFrom)
         {
             if (noteSequence.Count <= 1)
             {
@@ -164,6 +162,11 @@ namespace PumpItUpTrainer.Game.Notes
                     }
                 }
             }
+        }
+
+        private static Foot swapFoot(Foot currentFoot)
+        {
+            return currentFoot == Foot.Left ? Foot.Right : Foot.Left;
         }
     }
 }
