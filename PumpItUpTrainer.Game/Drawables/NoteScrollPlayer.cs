@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using osu.Framework.Allocation;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using PumpItUpTrainer.Game.Notes;
@@ -56,9 +57,13 @@ namespace PumpItUpTrainer.Game.Drawables
 
         private const int offset_from_top = 30;
 
+        private Sample hitSample = null!;
+
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(ISampleStore sampleStore)
         {
+            hitSample = sampleStore.Get("soft-hitclap.wav");
+
             RelativeSizeAxes = Axes.Both;
 
             AddInternal(topRowNotesContainer = new Container
@@ -96,7 +101,11 @@ namespace PumpItUpTrainer.Game.Drawables
                 Drawable drawableNote;
                 AddInternal(drawableNote = noteToDrawable(note));
                 drawableNote.Y = 850; // idk lol anywhere off screen
-                drawableNote.Delay(nextNoteStartingTime).Then().MoveToY(topRowNotesContainer.Position.Y, noteTravelTimeMs);
+                drawableNote.Delay(nextNoteStartingTime).Then().MoveToY(topRowNotesContainer.Position.Y, noteTravelTimeMs).Finally(d =>
+                {
+                    RemoveInternal(d, false); // bro idk what disposing immediately means but it crashes everything lol
+                    hitSample.Play();
+                });
 
                 nextNoteStartingTime += msBetweenNotes;
             }

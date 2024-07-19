@@ -54,7 +54,7 @@ namespace PumpItUpTrainer.Game.Notes
                 return new();
             }
 
-            List<Note> generatedNotes = [horizontalFlips.ToList()[random.Next(horizontalFlips.Count)].Key];
+            List<Note> generatedNotes = [allowedNotes[random.Next(allowedNotes.Count)]];
 
             Foot currentFoot = swapFoot(startingFoot);
 
