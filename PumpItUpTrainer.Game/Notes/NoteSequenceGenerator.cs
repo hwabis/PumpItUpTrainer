@@ -54,15 +54,7 @@ namespace PumpItUpTrainer.Game.Notes
                 return new();
             }
 
-            List<Note> generatedNotes = new();
-
-            List<Note> leftFootStartingNotes = [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR];
-            List<Note> rightFootStartingNotes = [Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR];
-
-            allowOnlyAllowedNotes(allowedNotes, leftFootStartingNotes);
-            allowOnlyAllowedNotes(allowedNotes, rightFootStartingNotes);
-
-            generatedNotes.Add(startingFoot == Foot.Left ? leftFootStartingNotes[leftFootStartingNotes.Count] : rightFootStartingNotes[rightFootStartingNotes.Count]);
+            List<Note> generatedNotes = [horizontalFlips.ToList()[random.Next(horizontalFlips.Count)].Key];
 
             Foot currentFoot = swapFoot(startingFoot);
 
@@ -74,6 +66,9 @@ namespace PumpItUpTrainer.Game.Notes
 
                 allowOnlyAllowedNotes(allowedNotes, candidateNotes);
                 banCandidateNotesCausingBannedPatterns(generatedNotes, currentFoot, candidateNotes);
+
+                if (candidateNotes.Count == 0)
+                    return generatedNotes;
 
                 generatedNotes.Add(candidateNotes[random.Next(candidateNotes.Count)]);
 

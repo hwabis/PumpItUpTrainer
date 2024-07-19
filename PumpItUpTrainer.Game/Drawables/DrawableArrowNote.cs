@@ -11,6 +11,7 @@ namespace PumpItUpTrainer.Game.Drawables
         [BackgroundDependencyLoader]
         private void load(TextureStore store)
         {
+            Anchor = Anchor.TopCentre;
             Origin = Anchor.Centre;
             Size = new(75, 75);
 

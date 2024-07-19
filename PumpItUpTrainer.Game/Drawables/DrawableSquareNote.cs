@@ -11,6 +11,7 @@ namespace PumpItUpTrainer.Game.Drawables
         private void load()
         {
             AutoSizeAxes = Axes.Both;
+            Anchor = Anchor.TopCentre;
             Origin = Anchor.Centre;
             Masking = true;
             CornerRadius = 10;
