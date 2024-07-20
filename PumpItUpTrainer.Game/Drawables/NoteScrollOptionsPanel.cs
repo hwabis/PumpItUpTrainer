@@ -93,12 +93,14 @@ namespace PumpItUpTrainer.Game.Drawables
                     Width = 100,
                     Margin = new(5),
                     Items = [
-                        NoteConfig.InMiddle6,
+                        NoteConfig.Middle6,
+                        NoteConfig.MiddleLeft5,
+                        NoteConfig.MiddleRight5,
                         NoteConfig.Single5,
-                        NoteConfig.InMiddle4,
+                        NoteConfig.Middle4,
                         NoteConfig.Left3,
                         NoteConfig.Right3,
-                        NoteConfig.All10
+                        NoteConfig.All10,
                     ]
                 },
                 playButton = new BasicButton
@@ -133,9 +135,11 @@ namespace PumpItUpTrainer.Game.Drawables
 
         private Dictionary<NoteConfig, List<Note>> configNotes = new()
         {
-            { NoteConfig.InMiddle6, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C]},
+            { NoteConfig.Middle6, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C]},
+            { NoteConfig.MiddleLeft5, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
+            { NoteConfig.MiddleRight5, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C]},
             { NoteConfig.Single5, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR]},
-            { NoteConfig.InMiddle4, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
+            { NoteConfig.Middle4, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
             { NoteConfig.Left3, [Note.P1C, Note.P1UR, Note.P1DR]},
             { NoteConfig.Right3, [Note.P2DL, Note.P2UL, Note.P2C]},
             { NoteConfig.All10, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR]},
@@ -143,9 +147,11 @@ namespace PumpItUpTrainer.Game.Drawables
 
         private enum NoteConfig
         {
-            InMiddle6,
+            Middle6,
+            MiddleLeft5,
+            MiddleRight5,
             Single5,
-            InMiddle4,
+            Middle4,
             Left3,
             Right3,
             All10,

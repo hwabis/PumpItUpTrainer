@@ -17,7 +17,7 @@ namespace PumpItUpTrainer.Game
             AddInternal(new NoteScrollOptionsPanel(notePlayer)
             {
                 X = 100,
-                Y = 200,
+                Y = 100,
                 Scale = new(2, 2),
             });
         }
