@@ -8,13 +8,16 @@ namespace PumpItUpTrainer.Game.Drawables
 {
     public partial class DrawableArrowNote : CompositeDrawable
     {
-        [BackgroundDependencyLoader]
-        private void load(TextureStore store)
+        public DrawableArrowNote()
         {
             Anchor = Anchor.TopCentre;
             Origin = Anchor.Centre;
             Size = new(75, 75);
+        }
 
+        [BackgroundDependencyLoader]
+        private void load(TextureStore store)
+        {
             AddInternal(new Sprite
             {
                 Anchor = Anchor.Centre,

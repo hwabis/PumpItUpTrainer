@@ -66,6 +66,39 @@ namespace PumpItUpTrainer.Game.Drawables
 
             RelativeSizeAxes = Axes.Both;
 
+            addTopRowNotes();
+        }
+
+        // returns the total time it will take
+        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes)
+        {
+            ClearInternal();
+            addTopRowNotes();
+
+            List<Note> notes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes);
+
+            double nextNoteStartingTime = 1000;
+            double msBetweenNotes = getTimeMsBetweenNotes(bpm);
+
+            foreach (Note note in notes)
+            {
+                Drawable drawableNote;
+                AddInternal(drawableNote = noteToDrawable(note));
+                drawableNote.Y = 850; // idk lol anywhere off screen
+                drawableNote.Delay(nextNoteStartingTime).Then().MoveToY(topRowNotesContainer.Position.Y, noteTravelTimeMs).Finally(d =>
+                {
+                    RemoveInternal(d, false); // bro idk what disposing immediately means but it crashes everything lol
+                    hitSample.Play();
+                });
+
+                nextNoteStartingTime += msBetweenNotes;
+            }
+
+            return nextNoteStartingTime + noteTravelTimeMs - msBetweenNotes;
+        }
+
+        private void addTopRowNotes()
+        {
             AddInternal(topRowNotesContainer = new Container
             {
                 AutoSizeAxes = Axes.Both,
@@ -87,28 +120,6 @@ namespace PumpItUpTrainer.Game.Drawables
                     new DrawableArrowNote { Anchor = Anchor.Centre, Rotation = 90, X = noteXPositions[9] },
                 ],
             });
-        }
-
-        public void GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes)
-        {
-            List<Note> notes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes);
-
-            double nextNoteStartingTime = 1000;
-            double msBetweenNotes = getTimeMsBetweenNotes(bpm);
-
-            foreach (Note note in notes)
-            {
-                Drawable drawableNote;
-                AddInternal(drawableNote = noteToDrawable(note));
-                drawableNote.Y = 850; // idk lol anywhere off screen
-                drawableNote.Delay(nextNoteStartingTime).Then().MoveToY(topRowNotesContainer.Position.Y, noteTravelTimeMs).Finally(d =>
-                {
-                    RemoveInternal(d, false); // bro idk what disposing immediately means but it crashes everything lol
-                    hitSample.Play();
-                });
-
-                nextNoteStartingTime += msBetweenNotes;
-            }
         }
 
         private double getTimeMsBetweenNotes(double bpm)
