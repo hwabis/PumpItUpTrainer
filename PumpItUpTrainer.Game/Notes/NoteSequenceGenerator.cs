@@ -11,12 +11,12 @@ namespace PumpItUpTrainer.Game.Notes
             { Note.P1DL, [Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR] },
             { Note.P1UL, [Note.P1DL, Note.P1C, Note.P1UR, Note.P1DR] },
             { Note.P1C, [Note.P1DL, Note.P1UL, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL] },
-            { Note.P1UR, [Note.P1C, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C] },
+            { Note.P1UR, [Note.P1DL /* QUESTIONABLE */, Note.P1C, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C] },
             { Note.P1DR, [Note.P1UL /* QUESTIONABLE */, Note.P1C, Note.P1UR, Note.P2DL, Note.P2UL, Note.P2C] },
             { Note.P2DL, [Note.P1UR, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR] },
             { Note.P2UL, [Note.P1DR, Note.P2DL, Note.P2C, Note.P2UR, Note.P2DR] },
             { Note.P2C, [Note.P2DL, Note.P2UL, Note.P2UR, Note.P2DR] },
-            { Note.P2UR, [Note.P2C, Note.P2DR] },
+            { Note.P2UR, [Note.P2DL /* QUESTIONABLE */, Note.P2C, Note.P2DR] },
             { Note.P2DR, [Note.P2UL /* QUESTIONABLE */, Note.P2C, Note.P2UR] },
         };
 
