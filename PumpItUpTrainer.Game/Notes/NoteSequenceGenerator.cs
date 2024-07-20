@@ -63,7 +63,7 @@ namespace PumpItUpTrainer.Game.Notes
             {
                 Note lastNote = generatedNotes.Last();
 
-                List<Note> candidateNotes = nextFoot == Foot.Left ? nextNotesLastFootRight[lastNote] : nextNotesLastFootLeft[lastNote];
+                List<Note> candidateNotes = (nextFoot == Foot.Left ? nextNotesLastFootRight[lastNote] : nextNotesLastFootLeft[lastNote]).ToList();
 
                 allowOnlyAllowedNotes(allowedNotes, candidateNotes);
                 banCandidateNotesCausingBannedPatterns(generatedNotes, swapFoot(nextFoot), candidateNotes);
