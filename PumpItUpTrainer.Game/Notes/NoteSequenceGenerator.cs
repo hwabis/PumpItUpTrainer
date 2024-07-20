@@ -74,7 +74,7 @@ namespace PumpItUpTrainer.Game.Notes
                 if (candidateNotes.Contains(generatedNotes.Last()))
                     throw new Exception("???");
 
-                generatedNotes.Add(getRandomNextNote(generatedNotes, candidateNotes));
+                generatedNotes.Add(getRandomNextNote(generatedNotes, candidateNotes, 4));
 
                 nextFoot = swapFoot(nextFoot);
             }
@@ -162,7 +162,7 @@ namespace PumpItUpTrainer.Game.Notes
 
         // Less likely to use a candidate note that matches the second to last note.
         // Nobody wants to play endless trills :)
-        private static Note getRandomNextNote(List<Note> existingNotes, List<Note> candidateNotes)
+        private static Note getRandomNextNote(List<Note> existingNotes, List<Note> candidateNotes, int additionalNonRepeatWeight)
         {
             if (existingNotes.Count < 2)
                 return candidateNotes[random.Next(candidateNotes.Count)];
@@ -176,7 +176,10 @@ namespace PumpItUpTrainer.Game.Notes
 
                 if (candidateNote != secondToLastNote)
                 {
-                    candidateNoteWeighted.Add(candidateNote);
+                    for (int i = 0; i < additionalNonRepeatWeight; i++)
+                    {
+                        candidateNoteWeighted.Add(candidateNote);
+                    }
                 }
             }
 
