@@ -70,9 +70,9 @@ namespace PumpItUpTrainer.Game.Drawables
         }
 
         // returns the total time it will take
-        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes)
+        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
         {
-            List<Note> notes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes);
+            List<Note> notes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes, hardModeOn);
 
             double nextNoteStartingTime = 1000;
             double msBetweenNotes = getTimeMsBetweenNotes(bpm);

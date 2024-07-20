@@ -11,16 +11,29 @@ namespace PumpItUpTrainer.Game.Notes
             { Note.P1DL, [Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR] },
             { Note.P1UL, [Note.P1DL, Note.P1C, Note.P1UR, Note.P1DR] },
             { Note.P1C, [Note.P1DL, Note.P1UL, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL] },
-            { Note.P1UR, [Note.P1DL /* QUESTIONABLE */, Note.P1C, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C] },
-            { Note.P1DR, [Note.P1UL /* QUESTIONABLE */, Note.P1C, Note.P1UR, Note.P2DL, Note.P2UL, Note.P2C] },
+            { Note.P1UR, [Note.P1C, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C] },
+            { Note.P1DR, [Note.P1C, Note.P1UR, Note.P2DL, Note.P2UL, Note.P2C] },
             { Note.P2DL, [Note.P1UR, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR] },
             { Note.P2UL, [Note.P1DR, Note.P2DL, Note.P2C, Note.P2UR, Note.P2DR] },
             { Note.P2C, [Note.P2DL, Note.P2UL, Note.P2UR, Note.P2DR] },
-            { Note.P2UR, [Note.P2DL /* QUESTIONABLE */, Note.P2C, Note.P2DR] },
-            { Note.P2DR, [Note.P2UL /* QUESTIONABLE */, Note.P2C, Note.P2UR] },
+            { Note.P2UR, [Note.P2C, Note.P2DR] },
+            { Note.P2DR, [Note.P2C, Note.P2UR] },
         };
 
         private static Dictionary<Note, List<Note>> nextNotesLastFootRight = [];
+
+        private static Dictionary<Note, List<Note>> nextNotesLastFootLeftHard = new()
+        {
+            { Note.P1UR, [Note.P1DL] },
+            { Note.P1DR, [Note.P1UL] },
+            { Note.P2DL, [Note.P1C] },
+            { Note.P2UL, [Note.P1C] },
+            { Note.P2C, [Note.P1UR, Note.P1DR] },
+            { Note.P2UR, [Note.P2DL] },
+            { Note.P2DR, [Note.P2UL] },
+        };
+
+        private static Dictionary<Note, List<Note>> nextNotesLastFootRightHard = [];
 
         private static Dictionary<Note, Note> horizontalFlips = new()
         {
@@ -46,9 +59,20 @@ namespace PumpItUpTrainer.Game.Notes
                 List<Note> flippedValues = nextNotesLastFootLeft[flippedNote].Select(n => horizontalFlips[n]).ToList();
                 nextNotesLastFootRight[entry.Key] = flippedValues;
             }
+
+            foreach (var entry in nextNotesLastFootLeftHard)
+            {
+                Note flippedNote = horizontalFlips[entry.Key];
+
+                if (nextNotesLastFootLeftHard.ContainsKey(flippedNote))
+                {
+                    List<Note> flippedValues = nextNotesLastFootLeftHard[flippedNote].Select(n => horizontalFlips[n]).ToList();
+                    nextNotesLastFootRightHard[entry.Key] = flippedValues;
+                }
+            }
         }
 
-        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes)
+        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
         {
             if (noteCount < 1)
             {
@@ -64,6 +88,19 @@ namespace PumpItUpTrainer.Game.Notes
                 Note lastNote = generatedNotes.Last();
 
                 List<Note> candidateNotes = (nextFoot == Foot.Left ? nextNotesLastFootRight[lastNote] : nextNotesLastFootLeft[lastNote]).ToList();
+
+                if (hardModeOn)
+                {
+                    bool hardListExists = nextFoot == Foot.Left ?
+                        nextNotesLastFootRightHard.ContainsKey(lastNote) : nextNotesLastFootLeftHard.ContainsKey(lastNote);
+
+                    if (hardListExists)
+                    {
+                        List<Note> hardCandidateNotes =
+                            (nextFoot == Foot.Left ? nextNotesLastFootRightHard[lastNote] : nextNotesLastFootLeftHard[lastNote]).ToList();
+                        candidateNotes.AddRange(hardCandidateNotes);
+                    }
+                }
 
                 allowOnlyAllowedNotes(allowedNotes, candidateNotes);
                 banCandidateNotesCausingBannedPatterns(generatedNotes, swapFoot(nextFoot), candidateNotes);
@@ -123,13 +160,15 @@ namespace PumpItUpTrainer.Game.Notes
                 }
                 else if (lastNote == Note.P2C)
                 {
-                    if (secondToLastNote == Note.P2DL)
+                    if (secondToLastNote == Note.P2DL || secondToLastNote == Note.P1DR)
                     {
                         candidateNotesToBanFrom.Remove(Note.P2UL);
+                        candidateNotesToBanFrom.Remove(Note.P1UR);
                     }
-                    else if (secondToLastNote == Note.P2UL)
+                    else if (secondToLastNote == Note.P2UL || secondToLastNote == Note.P1UR)
                     {
                         candidateNotesToBanFrom.Remove(Note.P2DL);
+                        candidateNotesToBanFrom.Remove(Note.P1DR);
                     }
                 }
             }
@@ -137,13 +176,15 @@ namespace PumpItUpTrainer.Game.Notes
             {
                 if (lastNote == Note.P1C)
                 {
-                    if (secondToLastNote == Note.P1DR)
+                    if (secondToLastNote == Note.P1DR || secondToLastNote == Note.P2DL)
                     {
                         candidateNotesToBanFrom.Remove(Note.P1UR);
+                        candidateNotesToBanFrom.Remove(Note.P2UL);
                     }
-                    else if (secondToLastNote == Note.P1UR)
+                    else if (secondToLastNote == Note.P1UR || secondToLastNote == Note.P2UL)
                     {
                         candidateNotesToBanFrom.Remove(Note.P1DR);
+                        candidateNotesToBanFrom.Remove(Note.P2DL);
                     }
                 }
                 else if (lastNote == Note.P2C)

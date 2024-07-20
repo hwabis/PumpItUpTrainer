@@ -19,6 +19,7 @@ namespace PumpItUpTrainer.Game.Drawables
         private TextBox noteCount = null!;
         private Dropdown<Foot> startingFoot = null!;
         private Dropdown<NoteConfig> noteConfigs = null!;
+        private Checkbox hardMode = null!;
         private Button playButton = null!;
 
         private Button stopButton = null!;
@@ -114,6 +115,19 @@ namespace PumpItUpTrainer.Game.Drawables
                             NoteConfig.All10,
                         ]
                     },
+                    new FillFlowContainer
+                    {
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Children =
+                        [
+                            new SpriteText
+                            {
+                                Text = "Hard mode on: "
+                            },
+                            hardMode = new BasicCheckbox(),
+                        ]
+                    },
                     playButton = new BasicButton
                     {
                         Size = new(50, 25),
@@ -128,7 +142,8 @@ namespace PumpItUpTrainer.Game.Drawables
                                     int.Parse(scrollTimeMs.Text),
                                     int.Parse(noteCount.Text),
                                     startingFoot.Current.Value,
-                                    configNotes[noteConfigs.Current.Value]);
+                                    configNotes[noteConfigs.Current.Value],
+                                    hardMode.Current.Value);
 
                                 optionsContainer.FadeOut().Delay(totalTime).Then().FadeIn().Finally(_ => stopButton.Hide());
                                 stopButton.Show();
