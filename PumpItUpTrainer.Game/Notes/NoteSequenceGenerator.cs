@@ -6,7 +6,7 @@ namespace PumpItUpTrainer.Game.Notes
 {
     public static class NoteSequenceGenerator
     {
-        private static Dictionary<Note, List<Note>> nextNotesCurrentFootLeft = new()
+        private static Dictionary<Note, List<Note>> nextNotesLastFootLeft = new()
         {
             { Note.P1DL, [Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR] },
             { Note.P1UL, [Note.P1DL, Note.P1C, Note.P1UR, Note.P1DR] },
@@ -20,7 +20,7 @@ namespace PumpItUpTrainer.Game.Notes
             { Note.P2DR, [Note.P2C, Note.P2UR] },
         };
 
-        private static Dictionary<Note, List<Note>> nextNotesCurrentFootRight = [];
+        private static Dictionary<Note, List<Note>> nextNotesLastFootRight = [];
 
         private static Dictionary<Note, Note> horizontalFlips = new()
         {
@@ -40,11 +40,11 @@ namespace PumpItUpTrainer.Game.Notes
 
         static NoteSequenceGenerator()
         {
-            foreach (var entry in nextNotesCurrentFootLeft)
+            foreach (var entry in nextNotesLastFootLeft)
             {
-                Note newNote = horizontalFlips[entry.Key];
-                List<Note> flippedValues = nextNotesCurrentFootLeft[newNote].Select(n => horizontalFlips[n]).ToList();
-                nextNotesCurrentFootRight[newNote] = flippedValues;
+                Note flippedNote = horizontalFlips[entry.Key];
+                List<Note> flippedValues = nextNotesLastFootLeft[flippedNote].Select(n => horizontalFlips[n]).ToList();
+                nextNotesLastFootRight[entry.Key] = flippedValues;
             }
         }
 
@@ -57,23 +57,26 @@ namespace PumpItUpTrainer.Game.Notes
 
             List<Note> generatedNotes = [allowedNotes[random.Next(allowedNotes.Count)]];
 
-            Foot currentFoot = swapFoot(startingFoot);
+            Foot nextFoot = swapFoot(startingFoot);
 
             for (int i = 1; i < noteCount; i++)
             {
-                Note currentNote = generatedNotes.Last();
+                Note lastNote = generatedNotes.Last();
 
-                List<Note> candidateNotes = currentFoot == Foot.Left ? nextNotesCurrentFootLeft[currentNote] : nextNotesCurrentFootRight[currentNote];
+                List<Note> candidateNotes = nextFoot == Foot.Left ? nextNotesLastFootRight[lastNote] : nextNotesLastFootLeft[lastNote];
 
                 allowOnlyAllowedNotes(allowedNotes, candidateNotes);
-                banCandidateNotesCausingBannedPatterns(generatedNotes, currentFoot, candidateNotes);
+                banCandidateNotesCausingBannedPatterns(generatedNotes, swapFoot(nextFoot), candidateNotes);
 
                 if (candidateNotes.Count == 0)
-                    return generatedNotes;
+                    throw new Exception("???");
+
+                if (candidateNotes.Contains(generatedNotes.Last()))
+                    throw new Exception("???");
 
                 generatedNotes.Add(candidateNotes[random.Next(candidateNotes.Count)]);
 
-                currentFoot = swapFoot(currentFoot);
+                nextFoot = swapFoot(nextFoot);
             }
 
             return generatedNotes;
@@ -95,7 +98,7 @@ namespace PumpItUpTrainer.Game.Notes
         // [RLR] UL C DL
         // [LRL] DR C UR
         // [LRL] UR C DR
-        private static void banCandidateNotesCausingBannedPatterns(List<Note> noteSequence, Foot currentFoot, List<Note> candidateNotesToBanFrom)
+        private static void banCandidateNotesCausingBannedPatterns(List<Note> noteSequence, Foot lastNoteFoot, List<Note> candidateNotesToBanFrom)
         {
             if (noteSequence.Count <= 1)
             {
@@ -104,7 +107,6 @@ namespace PumpItUpTrainer.Game.Notes
 
             Note lastNote = noteSequence.Last();
             Note secondToLastNote = noteSequence[^2];
-            Foot lastNoteFoot = swapFoot(currentFoot);
 
             if (lastNoteFoot == Foot.Left)
             {
