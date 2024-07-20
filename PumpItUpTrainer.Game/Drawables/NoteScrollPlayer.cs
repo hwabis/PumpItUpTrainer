@@ -72,9 +72,6 @@ namespace PumpItUpTrainer.Game.Drawables
         // returns the total time it will take
         public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes)
         {
-            ClearInternal();
-            addTopRowNotes();
-
             List<Note> notes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes);
 
             double nextNoteStartingTime = 1000;
@@ -95,6 +92,12 @@ namespace PumpItUpTrainer.Game.Drawables
             }
 
             return nextNoteStartingTime + noteTravelTimeMs - msBetweenNotes;
+        }
+
+        public void Stop()
+        {
+            ClearInternal();
+            addTopRowNotes();
         }
 
         private void addTopRowNotes()

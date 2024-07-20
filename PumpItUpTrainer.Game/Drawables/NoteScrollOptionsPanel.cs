@@ -9,10 +9,11 @@ using PumpItUpTrainer.Game.Notes;
 
 namespace PumpItUpTrainer.Game.Drawables
 {
-    public partial class NoteScrollOptionsPanel : FillFlowContainer
+    public partial class NoteScrollOptionsPanel : Container
     {
         private NoteScrollPlayer notePlayer;
 
+        private FillFlowContainer optionsContainer = null!;
         private TextBox bpm = null!;
         private TextBox scrollTimeMs = null!;
         private TextBox noteCount = null!;
@@ -20,117 +21,147 @@ namespace PumpItUpTrainer.Game.Drawables
         private Dropdown<NoteConfig> noteConfigs = null!;
         private Button playButton = null!;
 
+        private Button stopButton = null!;
+
         public NoteScrollOptionsPanel(NoteScrollPlayer notePlayer)
         {
             this.notePlayer = notePlayer;
-            Direction = FillDirection.Vertical;
             AutoSizeAxes = Axes.Both;
         }
 
         [BackgroundDependencyLoader]
         private void load()
         {
-            AddRangeInternal([
-                new FillFlowContainer
-                {
-                    AutoSizeAxes = Axes.Both,
-                    Direction = FillDirection.Horizontal,
-                    Children =
-                    [
-                        new SpriteText
-                        {
-                            Text = "BPM: "
-                        },
-                        bpm = new BasicTextBox
-                        {
-                            Size = new(50, 25)
-                        }
-                    ]
-                },
-                new FillFlowContainer
-                {
-                    AutoSizeAxes = Axes.Both,
-                    Direction = FillDirection.Horizontal,
-                    Children =
-                    [
-                        new SpriteText
-                        {
-                            Text = "Scroll time (ms): "
-                        },
-                        scrollTimeMs = new BasicTextBox
-                        {
-                            Size = new(50, 25)
-                        }
-                    ]
-                },
-                new FillFlowContainer
-                {
-                    AutoSizeAxes = Axes.Both,
-                    Direction = FillDirection.Horizontal,
-                    Children =
-                    [
-                        new SpriteText
-                        {
-                            Text = "Note count: "
-                        },
-                        noteCount = new BasicTextBox
-                        {
-                            Size = new(50, 25)
-                        }
-                    ]
-                },
-                startingFoot = new BasicDropdown<Foot>
-                {
-                    Width = 100,
-                    Margin = new(5),
-                    Items = [
-                        Foot.Left,
-                        Foot.Right,
-                    ]
-                },
-                noteConfigs = new BasicDropdown<NoteConfig>
-                {
-                    Width = 100,
-                    Margin = new(5),
-                    Items = [
-                        NoteConfig.Middle6,
-                        NoteConfig.MiddleLeft5,
-                        NoteConfig.MiddleRight5,
-                        NoteConfig.Single5,
-                        NoteConfig.Middle4,
-                        NoteConfig.Left3,
-                        NoteConfig.Right3,
-                        NoteConfig.All10,
-                    ]
-                },
-                playButton = new BasicButton
-                {
-                    Size = new(50, 25),
-                    Margin = new(5),
-                    Text = "Play",
-                    Action = () =>
+            AddInternal(optionsContainer = new FillFlowContainer
+            {
+                Direction = FillDirection.Vertical,
+                AutoSizeAxes = Axes.Both,
+                Children =
+                [
+                    new FillFlowContainer
                     {
-                        try
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Children =
+                        [
+                            new SpriteText
+                            {
+                                Text = "BPM: "
+                            },
+                            bpm = new BasicTextBox
+                            {
+                                Size = new(50, 25)
+                            }
+                        ]
+                    },
+                    new FillFlowContainer
+                    {
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Children =
+                        [
+                            new SpriteText
+                            {
+                                Text = "Scroll time (ms): "
+                            },
+                            scrollTimeMs = new BasicTextBox
+                            {
+                                Size = new(50, 25)
+                            }
+                        ]
+                    },
+                    new FillFlowContainer
+                    {
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        Children =
+                        [
+                            new SpriteText
+                            {
+                                Text = "Note count: "
+                            },
+                            noteCount = new BasicTextBox
+                            {
+                                Size = new(50, 25)
+                            }
+                        ]
+                    },
+                    startingFoot = new BasicDropdown<Foot>
+                    {
+                        Width = 100,
+                        Margin = new(5),
+                        Items =
+                        [
+                            Foot.Left,
+                            Foot.Right,
+                        ]
+                    },
+                    noteConfigs = new BasicDropdown<NoteConfig>
+                    {
+                        Width = 100,
+                        Margin = new(5),
+                        Items =
+                        [
+                            NoteConfig.Middle6,
+                            NoteConfig.MiddleLeft5,
+                            NoteConfig.MiddleRight5,
+                            NoteConfig.Single5,
+                            NoteConfig.Middle4,
+                            NoteConfig.Left3,
+                            NoteConfig.Right3,
+                            NoteConfig.All10,
+                        ]
+                    },
+                    playButton = new BasicButton
+                    {
+                        Size = new(50, 25),
+                        Margin = new(5),
+                        Text = "Play",
+                        Action = () =>
                         {
-                            double totalTime = notePlayer.GenerateAndPlayNotes(
-                                int.Parse(bpm.Text),
-                                int.Parse(scrollTimeMs.Text),
-                                int.Parse(noteCount.Text),
-                                startingFoot.Current.Value,
-                                configNotes[noteConfigs.Current.Value]);
+                            try
+                            {
+                                double totalTime = notePlayer.GenerateAndPlayNotes(
+                                    int.Parse(bpm.Text),
+                                    int.Parse(scrollTimeMs.Text),
+                                    int.Parse(noteCount.Text),
+                                    startingFoot.Current.Value,
+                                    configNotes[noteConfigs.Current.Value]);
 
-                            this.FadeOut(0).Delay(totalTime).Then().FadeIn(0);
+                                optionsContainer.FadeOut().Delay(totalTime).Then().FadeIn().Finally(_ => stopButton.Hide());
+                                stopButton.Show();
 
-                            // none of the things i tried below worked LOL
-                            // Hide();
-                            // Schedule(_ => Show(), totalTime);
-                            // this.FadeOut(0).Then().Delay(totalTime).Finally(_ => Show());
+                                // none of the things i tried below worked LOL
+                                // Hide();
+                                // Schedule(_ => Show(), totalTime);
+                                // this.FadeOut(0).Then().Delay(totalTime).Finally(_ => Show());
+                            }
+                            catch (ArgumentNullException) { }
+                            catch (FormatException) { }
                         }
-                        catch (ArgumentNullException) { }
-                        catch (FormatException) { }
-                    }
+                    },
+                ]
+            }
+            );
+
+            AddInternal(stopButton = new BasicButton
+            {
+                Size = new(50, 25),
+                Text = "Stop",
+                Action = () =>
+                {
+                    stopButton.Hide();
+                    notePlayer.Stop();
+                    optionsContainer.Show();
                 }
-            ]);
+            });
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            stopButton.Hide();
         }
 
         private Dictionary<NoteConfig, List<Note>> configNotes = new()
