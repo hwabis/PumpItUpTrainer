@@ -18,7 +18,7 @@ namespace PumpItUpTrainer.Game
             {
                 X = 100,
                 Y = 100,
-                Scale = new(2, 2),
+                Scale = new(1.5f, 1.5f),
             });
         }
     }
