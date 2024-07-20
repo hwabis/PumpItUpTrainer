@@ -15,7 +15,7 @@ namespace PumpItUpTrainer.Game.Notes
             { Note.P1DR, [Note.P1C, Note.P1UR, Note.P2DL, Note.P2UL, Note.P2C] },
             { Note.P2DL, [Note.P1UR, Note.P2UR, Note.P2C, Note.P2UR, Note.P2DR] },
             { Note.P2UL, [Note.P1DR, Note.P2DL, Note.P2C, Note.P2UR, Note.P2DR] },
-            { Note.P2C, [Note.P2DL, Note.P2UL, Note.P2UR, Note.P2DL] },
+            { Note.P2C, [Note.P2DL, Note.P2UL, Note.P2UR, Note.P2DR] },
             { Note.P2UR, [Note.P2C, Note.P2DR] },
             { Note.P2DR, [Note.P2C, Note.P2UR] },
         };
@@ -42,8 +42,9 @@ namespace PumpItUpTrainer.Game.Notes
         {
             foreach (var entry in nextNotesCurrentFootLeft)
             {
-                List<Note> flippedValues = entry.Value.Select(n => horizontalFlips[n]).ToList();
-                nextNotesCurrentFootRight[entry.Key] = flippedValues;
+                Note newNote = horizontalFlips[entry.Key];
+                List<Note> flippedValues = nextNotesCurrentFootLeft[newNote].Select(n => horizontalFlips[n]).ToList();
+                nextNotesCurrentFootRight[newNote] = flippedValues;
             }
         }
 
@@ -103,8 +104,9 @@ namespace PumpItUpTrainer.Game.Notes
 
             Note lastNote = noteSequence.Last();
             Note secondToLastNote = noteSequence[^2];
+            Foot lastNoteFoot = swapFoot(currentFoot);
 
-            if (currentFoot == Foot.Left)
+            if (lastNoteFoot == Foot.Left)
             {
                 if (lastNote == Note.P1C)
                 {
@@ -129,7 +131,7 @@ namespace PumpItUpTrainer.Game.Notes
                     }
                 }
             }
-            else if (currentFoot == Foot.Right)
+            else if (lastNoteFoot == Foot.Right)
             {
                 if (lastNote == Note.P1C)
                 {
