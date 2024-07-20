@@ -55,7 +55,7 @@ namespace PumpItUpTrainer.Game.Drawables
 
         private Container topRowNotesContainer = null!;
 
-        private const int offset_from_top = 30;
+        private const int offset_from_top = 70;
 
         private Sample hitSample = null!;
 
@@ -106,7 +106,7 @@ namespace PumpItUpTrainer.Game.Drawables
             {
                 AutoSizeAxes = Axes.Both,
                 Anchor = Anchor.TopCentre,
-                Origin = Anchor.TopCentre,
+                Origin = Anchor.Centre,
                 Colour = Colour4.Gray,
                 Y = offset_from_top,
                 Children =
