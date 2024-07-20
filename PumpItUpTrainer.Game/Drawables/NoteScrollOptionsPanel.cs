@@ -98,6 +98,7 @@ namespace PumpItUpTrainer.Game.Drawables
                         NoteConfig.InMiddle4,
                         NoteConfig.Left3,
                         NoteConfig.Right3,
+                        NoteConfig.All10
                     ]
                 },
                 playButton = new BasicButton
@@ -137,6 +138,7 @@ namespace PumpItUpTrainer.Game.Drawables
             { NoteConfig.InMiddle4, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
             { NoteConfig.Left3, [Note.P1C, Note.P1UR, Note.P1DR]},
             { NoteConfig.Right3, [Note.P2DL, Note.P2UL, Note.P2C]},
+            { NoteConfig.All10, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR]},
         };
 
         private enum NoteConfig
@@ -146,6 +148,7 @@ namespace PumpItUpTrainer.Game.Drawables
             InMiddle4,
             Left3,
             Right3,
+            All10,
         }
     }
 }
