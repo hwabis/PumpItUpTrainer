@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -18,7 +17,7 @@ namespace PumpItUpTrainer.Game.Drawables
         private TextBox scrollTimeMs = null!;
         private TextBox noteCount = null!;
         private Dropdown<Foot> startingFoot = null!;
-        private Dropdown<NoteConfig> noteConfigs = null!;
+        private NoteCheckboxRowSelector selectedNotes = null!;
         private Checkbox hardMode = null!;
         private Button playButton = null!;
 
@@ -97,23 +96,9 @@ namespace PumpItUpTrainer.Game.Drawables
                             Foot.Right,
                         ]
                     },
-                    noteConfigs = new BasicDropdown<NoteConfig>
+                    selectedNotes = new NoteCheckboxRowSelector
                     {
-                        Width = 100,
-                        Margin = new(5),
-                        Items =
-                        [
-                            NoteConfig.Middle6,
-                            NoteConfig.MiddleLeft5,
-                            NoteConfig.MiddleRight5,
-                            NoteConfig.Single5,
-                            NoteConfig.Middle4,
-                            NoteConfig.Left3,
-                            NoteConfig.Right3,
-                            NoteConfig.Left7,
-                            NoteConfig.Right7,
-                            NoteConfig.All10,
-                        ]
+                        Margin = new(5)
                     },
                     new FillFlowContainer
                     {
@@ -135,6 +120,11 @@ namespace PumpItUpTrainer.Game.Drawables
                         Text = "Play",
                         Action = () =>
                         {
+                            if (selectedNotes.GetSelectedNotes().Count <= 2)
+                            {
+                                return;
+                            }
+
                             try
                             {
                                 double totalTime = notePlayer.GenerateAndPlayNotes(
@@ -142,7 +132,7 @@ namespace PumpItUpTrainer.Game.Drawables
                                     int.Parse(scrollTimeMs.Text),
                                     int.Parse(noteCount.Text),
                                     startingFoot.Current.Value,
-                                    configNotes[noteConfigs.Current.Value],
+                                    selectedNotes.GetSelectedNotes(),
                                     hardMode.Current.Value);
 
                                 optionsContainer.FadeOut().Delay(totalTime).Then().FadeIn().Finally(_ => stopButton.Hide());
@@ -179,35 +169,6 @@ namespace PumpItUpTrainer.Game.Drawables
             base.LoadComplete();
 
             stopButton.Hide();
-        }
-
-        private Dictionary<NoteConfig, List<Note>> configNotes = new()
-        {
-            { NoteConfig.Middle6, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C]},
-            { NoteConfig.MiddleLeft5, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
-            { NoteConfig.MiddleRight5, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C]},
-            { NoteConfig.Single5, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR]},
-            { NoteConfig.Middle4, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
-            { NoteConfig.Left3, [Note.P1C, Note.P1UR, Note.P1DR]},
-            { NoteConfig.Right3, [Note.P2DL, Note.P2UL, Note.P2C]},
-            { NoteConfig.Left7, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL]},
-            { NoteConfig.Right7, [Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR]},
-            { NoteConfig.All10, [Note.P1DL, Note.P1UL, Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C, Note.P2UR, Note.P2DR]},
-        };
-
-        // todo: come up with a way to independently select notes so we don't need a config for every possible combination 🤣
-        private enum NoteConfig
-        {
-            Middle6,
-            MiddleLeft5,
-            MiddleRight5,
-            Single5,
-            Middle4,
-            Left3,
-            Right3,
-            Left7,
-            Right7,
-            All10,
         }
     }
 }
