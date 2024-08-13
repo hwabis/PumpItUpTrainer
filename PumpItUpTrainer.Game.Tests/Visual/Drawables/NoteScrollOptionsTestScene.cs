@@ -8,10 +8,10 @@ namespace PumpItUpTrainer.Game.Tests.Visual.Drawables
     {
         public NoteScrollOptionsTestScene()
         {
-            NoteScrollPlayer notePlayer;
+            NoteVisualizer notePlayer;
 
-            Add(notePlayer = new NoteScrollPlayer());
-            Add(new NoteScrollOptionsPanel(notePlayer)
+            Add(notePlayer = new NoteVisualizer());
+            Add(new NoteVisualizerOptionsPanel(notePlayer)
             {
                 X = 100,
                 Y = 200

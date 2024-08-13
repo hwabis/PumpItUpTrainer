@@ -11,10 +11,10 @@ namespace PumpItUpTrainer.Game
         [BackgroundDependencyLoader]
         private void load()
         {
-            NoteScrollPlayer notePlayer;
+            NoteVisualizer notePlayer;
 
-            AddInternal(notePlayer = new NoteScrollPlayer());
-            AddInternal(new NoteScrollOptionsPanel(notePlayer)
+            AddInternal(notePlayer = new NoteVisualizer());
+            AddInternal(new NoteVisualizerOptionsPanel(notePlayer)
             {
                 X = 100,
                 Y = 100,

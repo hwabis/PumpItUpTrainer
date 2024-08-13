@@ -8,24 +8,25 @@ using PumpItUpTrainer.Game.Notes;
 
 namespace PumpItUpTrainer.Game.Drawables
 {
-    public partial class NoteScrollOptionsPanel : Container
+    public partial class NoteVisualizerOptionsPanel : Container
     {
-        private NoteScrollPlayer notePlayer;
+        private NoteVisualizer noteVisualizer;
 
         private FillFlowContainer optionsContainer = null!;
         private TextBox bpm = null!;
         private TextBox scrollTimeMs = null!;
         private TextBox noteCount = null!;
         private Dropdown<Foot> startingFoot = null!;
+        private Dropdown<NoteVisualizationType> noteVisualization = null!;
         private NoteCheckboxRowSelector selectedNotes = null!;
         private Checkbox hardMode = null!;
         private Button playButton = null!;
 
         private Button stopButton = null!;
 
-        public NoteScrollOptionsPanel(NoteScrollPlayer notePlayer)
+        public NoteVisualizerOptionsPanel(NoteVisualizer noteVisualizer)
         {
-            this.notePlayer = notePlayer;
+            this.noteVisualizer = noteVisualizer;
             AutoSizeAxes = Axes.Both;
         }
 
@@ -96,6 +97,16 @@ namespace PumpItUpTrainer.Game.Drawables
                             Foot.Right,
                         ]
                     },
+                    noteVisualization = new BasicDropdown<NoteVisualizationType>
+                    {
+                        Width = 100,
+                        Margin = new(5),
+                        Items =
+                        [
+                            NoteVisualizationType.Scrolling,
+                            NoteVisualizationType.Freeze,
+                        ]
+                    },
                     selectedNotes = new NoteCheckboxRowSelector
                     {
                         Margin = new(5)
@@ -127,11 +138,12 @@ namespace PumpItUpTrainer.Game.Drawables
 
                             try
                             {
-                                double totalTime = notePlayer.GenerateAndPlayNotes(
+                                double totalTime = noteVisualizer.GenerateAndPlayNotes(
                                     int.Parse(bpm.Text),
                                     int.Parse(scrollTimeMs.Text),
                                     int.Parse(noteCount.Text),
                                     startingFoot.Current.Value,
+                                    noteVisualization.Current.Value,
                                     selectedNotes.GetSelectedNotes(),
                                     hardMode.Current.Value);
 
@@ -147,6 +159,19 @@ namespace PumpItUpTrainer.Game.Drawables
                             catch (FormatException) { }
                         }
                     },
+                    new BasicButton
+                    {
+                        Size = new(150, 25),
+                        Margin = new(5),
+                        Text = "Show last notes",
+                        Action = () =>
+                        {
+                            noteVisualizer.ShowMostRecentNotes();
+
+                            optionsContainer.Hide();
+                            stopButton.Show();
+                        }
+                    },
                 ]
             }
             );
@@ -158,7 +183,7 @@ namespace PumpItUpTrainer.Game.Drawables
                 Action = () =>
                 {
                     stopButton.Hide();
-                    notePlayer.Stop();
+                    noteVisualizer.Stop();
                     optionsContainer.Show();
                 }
             });
