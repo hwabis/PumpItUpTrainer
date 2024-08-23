@@ -38,81 +38,33 @@ namespace PumpItUpTrainer.Game.Drawables
                 AutoSizeAxes = Axes.Both,
                 Children =
                 [
-                    new FillFlowContainer
+                    new TextWithAdjacentDrawable("BPM: ", bpm = new BasicTextBox
                     {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Children =
-                        [
-                            new SpriteText
-                            {
-                                Text = "BPM: "
-                            },
-                            bpm = new BasicTextBox
-                            {
-                                Size = new(50, 25)
-                            }
-                        ]
-                    },
-                    new FillFlowContainer
+                        Size = new(50, 25)
+                    }),
+                    new TextWithAdjacentDrawable("Scroll time (ms): ", scrollTimeMs = new BasicTextBox
                     {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Children =
-                        [
-                            new SpriteText
-                            {
-                                Text = "Scroll time (ms): "
-                            },
-                            scrollTimeMs = new BasicTextBox
-                            {
-                                Size = new(50, 25)
-                            }
-                        ]
-                    },
-                    new FillFlowContainer
+                        Size = new(50, 25)
+                    }),
+                    new TextWithAdjacentDrawable("Note count: ", noteCount = new BasicTextBox
                     {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Children =
-                        [
-                            new SpriteText
-                            {
-                                Text = "Note count: "
-                            },
-                            noteCount = new BasicTextBox
-                            {
-                                Size = new(50, 25)
-                            }
-                        ]
-                    },
-                    startingFoot = new BasicDropdown<Foot>
+                        Size = new(50, 25)
+                    }),
+                    new TextWithAdjacentDrawable("Starting foot: ", startingFoot = new BasicDropdown<Foot>
                     {
                         Width = 100,
                         Margin = new(5),
                         Items =
-                        [
-                            Foot.Left,
-                            Foot.Right,
-                        ]
-                    },
-                    selectedNotes = new NoteCheckboxRowSelector
+                                [
+                                    Foot.Left,
+                                    Foot.Right,
+                                ]
+                    }),
+                    new TextWithAdjacentDrawable("Available notes:", selectedNotes = new NoteCheckboxRowSelector
                     {
                         Margin = new(5)
-                    },
-                    new FillFlowContainer
-                    {
-                        AutoSizeAxes = Axes.Both,
-                        Direction = FillDirection.Horizontal,
-                        Children =
-                        [
-                            new SpriteText
-                            {
-                                Text = "Include large crossovers: "
-                            },
-                            hardMode = new BasicCheckbox(),
-                        ]
-                    },
+                    }),
+                    new TextWithAdjacentDrawable("Include large crossovers:", hardMode = new BasicCheckbox()),
                     playButton = new BasicButton
                     {
                         Size = new(50, 25),
@@ -169,6 +121,34 @@ namespace PumpItUpTrainer.Game.Drawables
             base.LoadComplete();
 
             stopButton.Hide();
+        }
+
+        private partial class TextWithAdjacentDrawable : FillFlowContainer
+        {
+            private string text;
+            private Drawable adjacentDrawable;
+
+            public TextWithAdjacentDrawable(string text, Drawable adjacentDrawable)
+            {
+                this.text = text;
+                this.adjacentDrawable = adjacentDrawable;
+
+                AutoSizeAxes = Axes.Both;
+                Direction = FillDirection.Horizontal;
+            }
+
+            [BackgroundDependencyLoader]
+            private void load()
+            {
+                Children =
+                [
+                    new SpriteText
+                    {
+                        Text = text,
+                    },
+                    adjacentDrawable,
+                ];
+            }
         }
     }
 }
