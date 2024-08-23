@@ -17,7 +17,6 @@ namespace PumpItUpTrainer.Game.Drawables
         private TextBox scrollTimeMs = null!;
         private TextBox noteCount = null!;
         private Dropdown<Foot> startingFoot = null!;
-        private Dropdown<NoteVisualizationType> noteVisualization = null!;
         private NoteCheckboxRowSelector selectedNotes = null!;
         private Checkbox hardMode = null!;
         private Button playButton = null!;
@@ -97,16 +96,6 @@ namespace PumpItUpTrainer.Game.Drawables
                             Foot.Right,
                         ]
                     },
-                    noteVisualization = new BasicDropdown<NoteVisualizationType>
-                    {
-                        Width = 100,
-                        Margin = new(5),
-                        Items =
-                        [
-                            NoteVisualizationType.Scrolling,
-                            NoteVisualizationType.Freeze,
-                        ]
-                    },
                     selectedNotes = new NoteCheckboxRowSelector
                     {
                         Margin = new(5)
@@ -143,7 +132,6 @@ namespace PumpItUpTrainer.Game.Drawables
                                     int.Parse(scrollTimeMs.Text),
                                     int.Parse(noteCount.Text),
                                     startingFoot.Current.Value,
-                                    noteVisualization.Current.Value,
                                     selectedNotes.GetSelectedNotes(),
                                     hardMode.Current.Value);
 
@@ -157,19 +145,6 @@ namespace PumpItUpTrainer.Game.Drawables
                             }
                             catch (ArgumentNullException) { }
                             catch (FormatException) { }
-                        }
-                    },
-                    new BasicButton
-                    {
-                        Size = new(150, 25),
-                        Margin = new(5),
-                        Text = "Show last notes",
-                        Action = () =>
-                        {
-                            noteVisualizer.ShowMostRecentNotes();
-
-                            optionsContainer.Hide();
-                            stopButton.Show();
                         }
                     },
                 ]

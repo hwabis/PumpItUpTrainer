@@ -72,25 +72,11 @@ namespace PumpItUpTrainer.Game.Drawables
         }
 
         // returns the total time it will take
-        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, NoteVisualizationType noteVisualization,
-            List<Note> allowedNotes, bool hardModeOn)
+        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
         {
             mostRecentGeneratedNotes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes, hardModeOn);
 
-            switch (noteVisualization)
-            {
-                case NoteVisualizationType.Scrolling:
-                    return visualizeNotesScrolling(bpm, noteTravelTimeMs, mostRecentGeneratedNotes);
-                case NoteVisualizationType.Freeze:
-                    return visualizeNotesFreeze(noteTravelTimeMs, mostRecentGeneratedNotes);
-                default:
-                    throw new Exception("😬😬😬");
-            }
-        }
-
-        public void ShowMostRecentNotes()
-        {
-            visualizeNotesFreeze(double.MaxValue /* whatever */, mostRecentGeneratedNotes);
+            return visualizeNotesScrolling(bpm, noteTravelTimeMs, mostRecentGeneratedNotes);
         }
 
         public void Stop()
@@ -119,30 +105,6 @@ namespace PumpItUpTrainer.Game.Drawables
             }
 
             return nextNoteStartingTime + noteTravelTimeMs - msBetweenNotes;
-        }
-
-        private double visualizeNotesFreeze(double noteTimeOnScreenMs, List<Note> notes)
-        {
-            // create an array of size `(note count) + 1` representing the Y positions evenly spaced from the top to bottom
-            float topMostYPosition = topRowNotesContainer.Position.Y;
-            float bottomMostYPosition = 750;
-            float yPositionInterval = (bottomMostYPosition - topMostYPosition) / notes.Count;
-
-            float currentYPosition = topMostYPosition;
-
-            foreach (Note note in notes)
-            {
-                Drawable drawableNote;
-                AddInternal(drawableNote = noteToDrawable(note));
-
-                drawableNote.Y = currentYPosition;
-                currentYPosition += yPositionInterval;
-
-                drawableNote.Delay(noteTimeOnScreenMs).Then().MoveToY(drawableNote.Y).Finally(d => RemoveInternal(d, false));
-                //                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ??? (complaining c++ style)
-            }
-
-            return noteTimeOnScreenMs;
         }
 
         private void addTopRowNotes()
