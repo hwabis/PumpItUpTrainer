@@ -17,25 +17,25 @@ namespace PumpItUpTrainer.Game.Drawables
             switch (note)
             {
                 case Note.P1DL:
-                    return new DrawableArrowNote { Colour = Colour4.Blue, Rotation = -180, X = noteXPositions[0] };
+                    return new DrawableArrowNote { Colour = Colour4.LightBlue, Rotation = -180, X = noteXPositions[0] };
                 case Note.P1UL:
-                    return new DrawableArrowNote { Colour = Colour4.Red, Rotation = -90, X = noteXPositions[1] };
+                    return new DrawableArrowNote { Colour = Colour4.OrangeRed, Rotation = -90, X = noteXPositions[1] };
                 case Note.P1C:
                     return new DrawableSquareNote { X = noteXPositions[2] };
                 case Note.P1UR:
-                    return new DrawableArrowNote { Colour = Colour4.Red, Rotation = 0, X = noteXPositions[3] };
+                    return new DrawableArrowNote { Colour = Colour4.OrangeRed, Rotation = 0, X = noteXPositions[3] };
                 case Note.P1DR:
-                    return new DrawableArrowNote { Colour = Colour4.Blue, Rotation = 90, X = noteXPositions[4] };
+                    return new DrawableArrowNote { Colour = Colour4.LightBlue, Rotation = 90, X = noteXPositions[4] };
                 case Note.P2DL:
-                    return new DrawableArrowNote { Colour = Colour4.Blue, Rotation = -180, X = noteXPositions[5] };
+                    return new DrawableArrowNote { Colour = Colour4.LightBlue, Rotation = -180, X = noteXPositions[5] };
                 case Note.P2UL:
-                    return new DrawableArrowNote { Colour = Colour4.Red, Rotation = -90, X = noteXPositions[6] };
+                    return new DrawableArrowNote { Colour = Colour4.OrangeRed, Rotation = -90, X = noteXPositions[6] };
                 case Note.P2C:
                     return new DrawableSquareNote { X = noteXPositions[7] };
                 case Note.P2UR:
-                    return new DrawableArrowNote { Colour = Colour4.Red, Rotation = 0, X = noteXPositions[8] };
+                    return new DrawableArrowNote { Colour = Colour4.OrangeRed, Rotation = 0, X = noteXPositions[8] };
                 case Note.P2DR:
-                    return new DrawableArrowNote { Colour = Colour4.Blue, Rotation = 90, X = noteXPositions[9] };
+                    return new DrawableArrowNote { Colour = Colour4.LightBlue, Rotation = 90, X = noteXPositions[9] };
                 default:
                     throw new Exception("d=====(￣▽￣*)b");
             }
