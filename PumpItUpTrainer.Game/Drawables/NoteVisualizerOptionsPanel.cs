@@ -119,7 +119,7 @@ namespace PumpItUpTrainer.Game.Drawables
                         [
                             new SpriteText
                             {
-                                Text = "Hard mode on: "
+                                Text = "Include large crossovers: "
                             },
                             hardMode = new BasicCheckbox(),
                         ]
