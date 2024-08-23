@@ -6,7 +6,7 @@ namespace PumpItUpTrainer.Game
 {
     public partial class PumpItUpTrainerGame : PumpItUpTrainerGameBase
     {
-        private ScreenStack screenStack;
+        private ScreenStack screenStack = null!;
 
         [BackgroundDependencyLoader]
         private void load()

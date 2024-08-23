@@ -16,6 +16,7 @@ namespace PumpItUpTrainer.Game.Drawables
         private TextBox bpm = null!;
         private TextBox scrollTimeMs = null!;
         private TextBox noteCount = null!;
+        private TextBox groupSize = null!;
         private Dropdown<Foot> startingFoot = null!;
         private NoteCheckboxRowSelector selectedNotes = null!;
         private Checkbox hardMode = null!;
@@ -50,15 +51,19 @@ namespace PumpItUpTrainer.Game.Drawables
                     {
                         Size = new(50, 25)
                     }),
+                    new TextWithAdjacentDrawable("Note group size: ", groupSize = new BasicTextBox
+                    {
+                        Size = new(50, 25)
+                    }),
                     new TextWithAdjacentDrawable("Starting foot: ", startingFoot = new BasicDropdown<Foot>
                     {
                         Width = 100,
                         Margin = new(5),
                         Items =
-                                [
-                                    Foot.Left,
-                                    Foot.Right,
-                                ]
+                        [
+                            Foot.Left,
+                            Foot.Right,
+                        ]
                     }),
                     new TextWithAdjacentDrawable("Available notes:", selectedNotes = new NoteCheckboxRowSelector
                     {
@@ -83,6 +88,7 @@ namespace PumpItUpTrainer.Game.Drawables
                                     int.Parse(bpm.Text),
                                     int.Parse(scrollTimeMs.Text),
                                     int.Parse(noteCount.Text),
+                                    int.Parse(groupSize.Text),
                                     startingFoot.Current.Value,
                                     selectedNotes.GetSelectedNotes(),
                                     hardMode.Current.Value);

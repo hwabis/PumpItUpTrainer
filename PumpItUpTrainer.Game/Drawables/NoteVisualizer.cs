@@ -72,11 +72,17 @@ namespace PumpItUpTrainer.Game.Drawables
         }
 
         // returns the total time it will take
-        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
+        public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, int groupSize,
+            Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
         {
             mostRecentGeneratedNotes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes, hardModeOn);
 
-            return visualizeNotesScrolling(bpm, noteTravelTimeMs, mostRecentGeneratedNotes);
+            if (groupSize <= 0)
+            {
+                groupSize = noteCount;
+            }
+
+            return visualizeNotesScrolling(bpm, groupSize, noteTravelTimeMs, mostRecentGeneratedNotes);
         }
 
         public void Stop()
@@ -85,13 +91,17 @@ namespace PumpItUpTrainer.Game.Drawables
             addTopRowNotes();
         }
 
-        private double visualizeNotesScrolling(double bpm, double noteTravelTimeMs, List<Note> notes)
+        private double visualizeNotesScrolling(double bpm, int groupSize, double noteTravelTimeMs, List<Note> notes)
         {
             double nextNoteStartingTime = 1000;
-            double msBetweenNotes = getTimeMsBetweenNotes(bpm);
+            double msBetweenNotesInGroup = getTimeMsBetweenNotes(bpm);
+            double additionalMsBetweenGroups = msBetweenNotesInGroup * (4 - (groupSize % 4));
+            int cumulativeNotesProcessed = 0;
 
             foreach (Note note in notes)
             {
+                cumulativeNotesProcessed++;
+
                 Drawable drawableNote;
                 AddInternal(drawableNote = noteToDrawable(note));
                 drawableNote.Y = 850; // idk lol anywhere off screen
@@ -101,10 +111,15 @@ namespace PumpItUpTrainer.Game.Drawables
                     hitSample.Play();
                 });
 
-                nextNoteStartingTime += msBetweenNotes;
+                nextNoteStartingTime += msBetweenNotesInGroup;
+
+                if (cumulativeNotesProcessed % groupSize == 0)
+                {
+                    nextNoteStartingTime += additionalMsBetweenGroups;
+                }
             }
 
-            return nextNoteStartingTime + noteTravelTimeMs - msBetweenNotes;
+            return nextNoteStartingTime + noteTravelTimeMs - msBetweenNotesInGroup;
         }
 
         private void addTopRowNotes()

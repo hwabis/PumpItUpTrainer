@@ -18,7 +18,7 @@ namespace PumpItUpTrainer.Game.Tests.Visual.Drawables
         {
             base.LoadComplete();
 
-            notePlayer.GenerateAndPlayNotes(100, 1000, 32, Foot.Right, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C], false);
+            notePlayer.GenerateAndPlayNotes(100, 1000, 32, 32, Foot.Right, [Note.P1C, Note.P1UR, Note.P1DR, Note.P2DL, Note.P2UL, Note.P2C], false);
         }
     }
 }
