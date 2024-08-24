@@ -72,7 +72,7 @@ namespace PumpItUpTrainer.Game.Notes
             }
         }
 
-        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
+        public static List<Note> GenerateNoteSequence(int noteCount, Foot startingFoot, List<Note> allowedNotes, bool hardModeOn, bool allowWideSwings)
         {
             if (noteCount < 1)
             {
@@ -103,7 +103,7 @@ namespace PumpItUpTrainer.Game.Notes
                 }
 
                 allowOnlyAllowedNotes(allowedNotes, candidateNotes);
-                banCandidateNotesCausingBannedPatterns(generatedNotes, swapFoot(nextFoot), candidateNotes);
+                banCandidateNotesCausingBannedPatterns(generatedNotes, swapFoot(nextFoot), candidateNotes, allowWideSwings);
 
                 if (candidateNotes.Count == 0)
                     throw new Exception("???");
@@ -130,12 +130,8 @@ namespace PumpItUpTrainer.Game.Notes
             }
         }
 
-        // Banned patterns:
-        // [RLR] DL C UL
-        // [RLR] UL C DL
-        // [LRL] DR C UR
-        // [LRL] UR C DR
-        private static void banCandidateNotesCausingBannedPatterns(List<Note> noteSequence, Foot lastNoteFoot, List<Note> candidateNotesToBanFrom)
+        private static void banCandidateNotesCausingBannedPatterns(
+            List<Note> noteSequence, Foot lastNoteFoot, List<Note> candidateNotesToBanFrom, bool allowWideSwings)
         {
             if (noteSequence.Count <= 1)
             {
@@ -144,6 +140,12 @@ namespace PumpItUpTrainer.Game.Notes
 
             Note lastNote = noteSequence.Last();
             Note secondToLastNote = noteSequence[^2];
+
+            // Ban patterns that would only be comfortable if you spin around
+            // [RLR] DL C UL
+            // [RLR] UL C DL
+            // [LRL] DR C UR
+            // [LRL] UR C DR
 
             if (lastNoteFoot == Foot.Left)
             {
@@ -194,6 +196,75 @@ namespace PumpItUpTrainer.Game.Notes
                         candidateNotesToBanFrom.Remove(Note.P2UR);
                     }
                     else if (secondToLastNote == Note.P2UR)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2DR);
+                    }
+                }
+            }
+
+            if (!allowWideSwings)
+            {
+                // Ban 180 degree twists
+
+                if (lastNote == Note.P1C)
+                {
+                    if (secondToLastNote == Note.P1DL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1UR);
+                    }
+                    else if (secondToLastNote == Note.P1UL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1DR);
+                    }
+                    else if (secondToLastNote == Note.P1DR || secondToLastNote == Note.P2DL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1UL);
+                    }
+                    else if (secondToLastNote == Note.P1UR || secondToLastNote == Note.P2UL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1DL);
+                    }
+                }
+                else if (lastNote == Note.P2C)
+                {
+                    if (secondToLastNote == Note.P2DR)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2UL);
+                    }
+                    else if (secondToLastNote == Note.P2UR)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2DL);
+                    }
+                    else if (secondToLastNote == Note.P1DR || secondToLastNote == Note.P2DL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2UR);
+                    }
+                    else if (secondToLastNote == Note.P1UR || secondToLastNote == Note.P2UL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2DR);
+                    }
+                }
+
+                // Ban ... long horizontal swings.
+
+                if (lastNote == Note.P1C)
+                {
+                    if (secondToLastNote == Note.P2UL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1UL);
+                    }
+                    if (secondToLastNote == Note.P2DL)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P1DL);
+                    }
+                }
+                else if (lastNote == Note.P2C)
+                {
+                    if (secondToLastNote == Note.P1UR)
+                    {
+                        candidateNotesToBanFrom.Remove(Note.P2UR);
+                    }
+                    if (secondToLastNote == Note.P1DR)
                     {
                         candidateNotesToBanFrom.Remove(Note.P2DR);
                     }

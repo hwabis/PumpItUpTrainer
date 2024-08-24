@@ -73,9 +73,9 @@ namespace PumpItUpTrainer.Game.Drawables
 
         // returns the total time it will take
         public double GenerateAndPlayNotes(double bpm, double noteTravelTimeMs, int noteCount, int groupSize,
-            Foot startingFoot, List<Note> allowedNotes, bool hardModeOn)
+            Foot startingFoot, List<Note> allowedNotes, bool hardModeOn, bool allowWideSwings)
         {
-            mostRecentGeneratedNotes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes, hardModeOn);
+            mostRecentGeneratedNotes = NoteSequenceGenerator.GenerateNoteSequence(noteCount, startingFoot, allowedNotes, hardModeOn, allowWideSwings);
 
             if (groupSize <= 0)
             {

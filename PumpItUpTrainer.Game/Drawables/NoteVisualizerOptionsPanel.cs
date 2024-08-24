@@ -20,6 +20,7 @@ namespace PumpItUpTrainer.Game.Drawables
         private Dropdown<Foot> startingFoot = null!;
         private NoteCheckboxRowSelector selectedNotes = null!;
         private Checkbox hardMode = null!;
+        private Checkbox wideSwings = null!;
         private Button playButton = null!;
 
         private Button stopButton = null!;
@@ -70,6 +71,7 @@ namespace PumpItUpTrainer.Game.Drawables
                         Margin = new(5)
                     }),
                     new TextWithAdjacentDrawable("Include large crossovers:", hardMode = new BasicCheckbox()),
+                    new TextWithAdjacentDrawable("Include wide swings (180° twists):", wideSwings = new BasicCheckbox()),
                     playButton = new BasicButton
                     {
                         Size = new(50, 25),
@@ -91,7 +93,8 @@ namespace PumpItUpTrainer.Game.Drawables
                                     int.Parse(groupSize.Text),
                                     startingFoot.Current.Value,
                                     selectedNotes.GetSelectedNotes(),
-                                    hardMode.Current.Value);
+                                    hardMode.Current.Value,
+                                    wideSwings.Current.Value);
 
                                 optionsContainer.FadeOut().Delay(totalTime).Then().FadeIn().Finally(_ => stopButton.Hide());
                                 stopButton.Show();
